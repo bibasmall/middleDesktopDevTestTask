@@ -1,15 +1,9 @@
-#include "httpClient.h"
 #include <QBitArray>
 #include <QString>
+#include "httpClient.h"
 
 
-HttpClient::HttpClient(QUrl url) : host(std::move(url))
-{
-    manager.setTransferTimeout();
-    connect(&manager, &QNetworkAccessManager::finished, this, &HttpClient::processReply);
-}
-
-void HttpClient::sendRequest(QUrl url, RequestType rtype, QByteArray body)
+void HttpClient::request(QUrl url, RequestType rtype, QByteArray body)
 {
     if(rtype == RequestType::GET)
         manager.get(QNetworkRequest(this->host.resolved(url)));
@@ -17,7 +11,7 @@ void HttpClient::sendRequest(QUrl url, RequestType rtype, QByteArray body)
         manager.post(QNetworkRequest(this->host.resolved(url)), body);    
 }
 
-void HttpClient::sendRequest(HttpRequest&& r)
+void HttpClient::request(const HttpRequest& r)
 {
     QNetworkRequest nr(this->host.resolved(r.url));
     for(auto& p : r.headers)
@@ -33,18 +27,28 @@ void HttpClient::sendRequest(HttpRequest&& r)
         manager.post(nr, r.body);
 }
 
+void HttpClient::setHost(QUrl url)
+{
+    host = url;
+}
+
 void HttpClient::processReply(QNetworkReply* reply)
 {
-    if (reply->error() != QNetworkReply::NoError )
-    {
-        qDebug() << "Failure: error code" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() << " " << reply->errorString();
-    }
-    else
+    if (reply->error() == QNetworkReply::NoError )
     {
         int code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         if (code >= 200 && code < 300)
             processResponse(reply->readAll());
     }
+    else
+        qDebug() << "Failure: error code" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() << " " << reply->errorString();
+    
     reply->close();
-    delete reply;
+    reply->deleteLater();
+}
+
+HttpClient::HttpClient(QUrl url) : host(std::move(url))
+{
+    manager.setTransferTimeout();
+    connect(&manager, &QNetworkAccessManager::finished, this, &HttpClient::processReply);
 }
