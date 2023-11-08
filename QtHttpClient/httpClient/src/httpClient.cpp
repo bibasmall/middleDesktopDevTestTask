@@ -3,13 +3,13 @@
 #include <QString>
 
 
-HttpClient& HttpClient::instance(QUrl url)
+HttpClient::HttpClient(QUrl url) : host(std::move(url))
 {
-    static HttpClient i{std::move(url)};
-    return i;
+    manager.setTransferTimeout();
+    connect(&manager, &QNetworkAccessManager::finished, this, &HttpClient::processReply);
 }
 
-void HttpClient::request(QUrl url, RequestType rtype, QByteArray&& body)
+void HttpClient::sendRequest(QUrl url, RequestType rtype, QByteArray body)
 {
     if(rtype == RequestType::GET)
         manager.get(QNetworkRequest(this->host.resolved(url)));
@@ -17,7 +17,7 @@ void HttpClient::request(QUrl url, RequestType rtype, QByteArray&& body)
         manager.post(QNetworkRequest(this->host.resolved(url)), body);    
 }
 
-void HttpClient::request(const HttpRequest& r)
+void HttpClient::sendRequest(HttpRequest&& r)
 {
     QNetworkRequest nr(this->host.resolved(r.url));
     for(auto& p : r.headers)
@@ -35,25 +35,16 @@ void HttpClient::request(const HttpRequest& r)
 
 void HttpClient::processReply(QNetworkReply* reply)
 {
-    if (reply->error() == QNetworkReply::NoError )
+    if (reply->error() != QNetworkReply::NoError )
+    {
+        qDebug() << "Failure: error code" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() << " " << reply->errorString();
+    }
+    else
     {
         int code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         if (code >= 200 && code < 300)
-        {
             processResponse(reply->readAll());
-            reply->close();
-            reply->deleteLater();
-            return;
-        }
     }
     reply->close();
-    reply->deleteLater();
-    qDebug() << "Failure: error code" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() << " " << reply->errorString();
+    delete reply;
 }
-
-HttpClient::HttpClient(QUrl url) : manager{}, host(std::move(url))
-{
-    manager.setTransferTimeout();
-    connect(&manager, &QNetworkAccessManager::finished, this, &HttpClient::processReply);
-}
-

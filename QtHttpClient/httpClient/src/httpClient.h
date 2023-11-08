@@ -22,23 +22,22 @@ public:
          QString pass                                             = {};
      };
     
-public:   
-    static HttpClient& instance(QUrl host);
+public:
+    HttpClient(QUrl host);
     
-    void request(QUrl url, RequestType = RequestType::GET, QByteArray&& body = {});
-    void request(const HttpRequest&);
+    void sendRequest(QUrl, RequestType = RequestType::GET, QByteArray = {});
+    void sendRequest(HttpRequest&&);
+    
+    void setHost();
     
 public:
-    virtual void processResponse(QByteArray data) {}
+    virtual void processResponse(QByteArray) {}
     virtual ~HttpClient() = default;
     
 private slots:
     void processReply(QNetworkReply* reply);
     
-protected:
-    HttpClient(QUrl host);
-    
 private:
-    QNetworkAccessManager manager;
-    QUrl                  host;
+    QUrl host;
+    inline static QNetworkAccessManager manager = QNetworkAccessManager{};
 };

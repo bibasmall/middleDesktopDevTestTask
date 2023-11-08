@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    //QCoreApplication a(argc, argv);
     auto& http = TextStreamHttpClient::instance(QUrl("https://reqbin.com"));
     
     http.request(QUrl("/echo/get/json"));
@@ -49,5 +49,6 @@ int main(int argc, char *argv[])
                                                    "",
                                                    ""});
     
-    return a.exec();
+    //return a.exec();
+    return 0;
 }
