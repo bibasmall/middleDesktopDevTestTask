@@ -6,9 +6,9 @@ import QtQuick.Controls.Basic
 Button {
     id: custombutton;
     
-    property bool isChecked;
-    property bool isEnabled;
-    property var iconPath;
+    required property bool isChecked;
+    required property bool isEnabled;
+    required property var iconPath;
     
     property bool isCheckable : true;
     property bool isUncheckable : false;
@@ -21,10 +21,7 @@ Button {
     signal buttonChecked();
     signal buttonUnchecked();
     
-    onClicked: {
-        if(!isEnabled)
-            return;
-        
+    onClicked: {       
         if(!isCheckable || (isUncheckable && isChecked))
         {
             justClicked();

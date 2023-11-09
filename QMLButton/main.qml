@@ -4,19 +4,19 @@ import QtQuick.Layouts 1.11
 import QtQuick.Controls.Basic
 
 Window {
-    id: wnd
-    width: 640
-    height: 480
-    visible: true
-    title: "QML Button"
+    id: wnd;
+    width: 640;
+    height: 480;
+    visible: true;
+    title: "QML Button";
     
     CustomButton { id: button; isChecked: true; isEnabled: true; iconPath: "file:///" + Qt.application.arguments[1]}
     
     Connections {
-        target: button
+        target: button;
         function onButtonHovered(isHovered)
         {
-            wnd.color = isHovered ? "blue" : "white";
+            wnd.color = isHovered ? "cyan" : "white";
         }
         function onJustClicked()
         {
