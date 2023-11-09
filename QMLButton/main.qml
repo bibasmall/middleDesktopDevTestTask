@@ -10,17 +10,25 @@ Window {
     visible: true
     title: "QML Button"
     
-    CustomButton { id: bigButton; isCheckable: true; isEnabled: true; iconPath: "file:///" + Qt.application.arguments[1]}
+    CustomButton { id: button; isChecked: true; isEnabled: true; iconPath: "file:///" + Qt.application.arguments[1]}
     
     Connections {
-        target: bigButton
-        function onB(p)
+        target: button
+        function onButtonHovered(isHovered)
         {
-            wnd.color = p ? "blue" : "white";
+            wnd.color = isHovered ? "blue" : "white";
         }
-        function onA()
+        function onJustClicked()
         {
             wnd.color = "orange";
+        }
+        function onButtonChecked()
+        {
+            wnd.color = "red";
+        }
+        function onButtonUnchecked()
+        {
+            wnd.color = "magenta";
         }
     }
 }

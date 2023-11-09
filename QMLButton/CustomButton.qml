@@ -3,38 +3,53 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.11
 import QtQuick.Controls.Basic
 
-Button {   
-    property bool isCheckable
-    property bool isEnabled
-    property var iconPath 
+Button {
+    id: custombutton;
     
-    signal a()
-    signal b(bool underCursor)
-    signal c()
+    property bool isChecked;
+    property bool isEnabled;
+    property var iconPath;
+    
+    property bool isCheckable : true;
+    property bool isUncheckable : false;
+    
+    enabled: isEnabled;
+    checked: isChecked;
+    
+    signal justClicked();
+    signal buttonHovered(bool isHovered);
+    signal buttonChecked();
+    signal buttonUnchecked();
     
     onClicked: {
-        if(isCheckable)
+        if(!isEnabled)
+            return;
+        
+        if(!isCheckable || (isUncheckable && isChecked))
         {
-            checked = !checked
-            custombutton.a()
-        }                
+            justClicked();
+            return;
+        }
+        
+        if(isChecked)
+            custombutton.buttonUnchecked();
+        else
+            custombutton.buttonChecked();
+        
+        isChecked = !isChecked;
     }
     onHoveredChanged: {
-        custombutton.b(hovered)
+            custombutton.buttonHovered(hovered);
     }
-    
-    id: custombutton
-    anchors.centerIn: parent
-    flat: true
-    icon.width: 400
-    icon.height: 400
-    icon.color: "transparent"
-    icon.source: iconPath
-    
-    enabled: isEnabled
-    checked: true
+           
+    anchors.centerIn: parent;
+    flat: true;
+    icon.width: 400;
+    icon.height: 400;
+    icon.color: "transparent";
+    icon.source: iconPath;
     
     background: Rectangle {
-        color: "transparent"
+        color: "transparent";
     }
 }
