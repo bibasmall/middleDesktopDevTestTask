@@ -1,5 +1,4 @@
 #pragma once
-#include <QResource>
 #include <QFileInfo>
 
 class IconValidator final

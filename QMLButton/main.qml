@@ -10,7 +10,7 @@ Window {
     visible: true;
     title: "QML Button";
     
-    CustomButton { id: button; isChecked: true; isEnabled: true; iconPath: "file:///" + Qt.application.arguments[1]}
+    CustomButton {  id: button; isChecked: true; isEnabled: true; iconPath: "file:///" + Qt.application.arguments[1];   }
     
     Connections {
         target: button;
