@@ -26,9 +26,9 @@ public:
     HttpClient(QUrl host);
     
     void sendRequest(QUrl, RequestType = RequestType::GET, QByteArray = {});
-    void sendRequest(HttpRequest&&);
+    void sendRequest(const HttpRequest&);
     
-    void setHost();
+    void setHost(QUrl);
     
 public:
     virtual void processResponse(QByteArray) {}

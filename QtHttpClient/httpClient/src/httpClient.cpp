@@ -3,7 +3,7 @@
 #include "httpClient.h"
 
 
-void HttpClient::request(QUrl url, RequestType rtype, QByteArray body)
+void HttpClient::sendRequest(QUrl url, RequestType rtype, QByteArray body)
 {
     if(rtype == RequestType::GET)
         manager.get(QNetworkRequest(this->host.resolved(url)));
@@ -11,7 +11,7 @@ void HttpClient::request(QUrl url, RequestType rtype, QByteArray body)
         manager.post(QNetworkRequest(this->host.resolved(url)), body);    
 }
 
-void HttpClient::request(const HttpRequest& r)
+void HttpClient::sendRequest(const HttpRequest& r)
 {
     QNetworkRequest nr(this->host.resolved(r.url));
     for(auto& p : r.headers)

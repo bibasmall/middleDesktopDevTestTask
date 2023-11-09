@@ -9,9 +9,9 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     TextStreamHttpClient http{QUrl("https://reqbin.com")};
     
-    http.request(QUrl("/echo/get/json"));
+    http.sendRequest(QUrl("/echo/get/json"));
     
-    http.request(TextStreamHttpClient::HttpRequest{QUrl("/echo/get/json"),
+    http.sendRequest(TextStreamHttpClient::HttpRequest{QUrl("/echo/get/json"),
                                                    TextStreamHttpClient::RequestType::GET,
                                                    {},
                                                    "",
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
                                                    "usr",
                                                    "pass"});
     
-    http.request(TextStreamHttpClient::HttpRequest{QUrl("/echo/post/json"),
+    http.sendRequest(TextStreamHttpClient::HttpRequest{QUrl("/echo/post/json"),
                                                    TextStreamHttpClient::RequestType::POST,
                                                    {},
                                                    "",
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
                                                    "usr",
                                                    "pass"});
     
-    http.request(TextStreamHttpClient::HttpRequest{QUrl("/echo/post/json"),
+    http.sendRequest(TextStreamHttpClient::HttpRequest{QUrl("/echo/post/json"),
                                                    TextStreamHttpClient::RequestType::POST,
                                                    {{"Content-Type", "text/plain"}},
                                                    "Plain text content",
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     json.insert("age", "27");
     QJsonDocument doc(json);
     
-    http.request(TextStreamHttpClient::HttpRequest{QUrl("/echo/post/json"),
+    http.sendRequest(TextStreamHttpClient::HttpRequest{QUrl("/echo/post/json"),
                                                    TextStreamHttpClient::RequestType::POST,
                                                    {{"Content-Type", "application/json"}},
                                                    doc.toJson(),
